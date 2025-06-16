@@ -11,25 +11,29 @@
 </head>
 
 <body class="container">
-    <h1 class="mt-5">Escritorio</h1>
+    <h1 class="mt-5" id="deskLbl">Escritorio</h1>
     <hr>
     <div class="row">
         <div class="col-8">
-            <h4>Atendiendo a <small class="text-primary">....</small></h4>
+            <h4>Atendiendo a <small id="smallT" class="text-primary">....</small></h4>
         
-            <button class="btn btn-primary mt-5">
-                Atender siguiente ticket
+            <button id="btn-draw" class="btn btn-primary mt-5">
+                Atender siguiente
+            </button>
+
+            <button id="btn-done" class="btn btn-primary mt-5">
+                Terminar 
             </button>
         </div>
 
         <div class="col-4 text-center">
             <h4>En cola</h4>
             
-            <div class="alert alert-info mt-2">
+            <div class="alert alert-info mt-2" id="alert">
                 <span>Ya no hay más tickets</span>
             </div>
 
-            <h1 id="lbl-pending">10</h1>
+            <h1 id="lbl-pending">Espere...</h1>
         </div>
     </div>
 

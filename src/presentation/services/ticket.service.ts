@@ -1,9 +1,14 @@
 import { UuidAdapter } from "../../config/uuid.adapter";
 import { Ticket } from "../../domain/interfaces/ticket";
+import { WssService } from "./wss.service";
 
 export class TicketService{
 
-    public readonly tickets:Ticket [] = [
+    constructor(
+        private readonly wssService = WssService.instance,
+    ){}
+
+    public tickets:Ticket [] = [
         {id:UuidAdapter.v4(), number: 1, createAt: new Date(), done:false, handleDoneAt: new Date()},
         {id:UuidAdapter.v4(), number: 2, createAt: new Date(), done:false, handleDoneAt: new Date()},
         {id:UuidAdapter.v4(), number: 3, createAt: new Date(), done:false, handleDoneAt: new Date()},
@@ -18,7 +23,7 @@ export class TicketService{
     }
 
     public get lastWorkingOnTickets():Ticket[]{
-        return  this.workingOnTickets.splice(0,4);
+        return  this.workingOnTickets.slice(0,4);
     }
 
     public get lastTicketNumber():number{
@@ -38,8 +43,9 @@ export class TicketService{
 
         this.tickets.push(ticket)
 
-        // TODO: WS
+        this.onTicketNumberChanged();
 
+        return ticket;
     }
 
     public drawTicket(desk:string){
@@ -51,7 +57,8 @@ export class TicketService{
 
         this.workingOnTickets.unshift({...Ticket});
 
-        // TODO WS
+        this.onTicketNumberChanged()
+        this.onWorckingOnChanged();
 
         return { status:'ok', Ticket }
 
@@ -61,7 +68,7 @@ export class TicketService{
         const Ticket = this.tickets.find( t => t.id === id );
         if( !Ticket ) return { status:'error', message:'Ticket no encontrado' }
 
-        this.tickets.map(ticket => {
+        this.tickets = this.tickets.map(ticket => {
 
             if(ticket.id === id){
                 ticket.done = true,
@@ -74,7 +81,12 @@ export class TicketService{
         return {status: 'ok'}
     }
 
-
+    private onTicketNumberChanged(){
+        this.wssService.sendMessqage('on-ticket-count-changed', this.pendingTickets.length );
+    }
+    private onWorckingOnChanged(){
+        this.wssService.sendMessqage('on-working-changed', this.lastWorkingOnTickets);
+    }
 
  
 }

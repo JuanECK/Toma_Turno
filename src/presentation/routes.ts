@@ -11,11 +11,8 @@ export class AppRoutes {
 
     const router = Router();
     
-    // Definir las rutas
-    // router.use('/api/todos', /*TodoRoutes.routes */ );
-
+    // Rutas Definidas
     router.use('/api/ticket', TicketRoutes.routes)
-
 
     return router;
   }

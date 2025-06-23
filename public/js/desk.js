@@ -8,6 +8,7 @@ const btnDone = document.getElementById('btn-done')
 const currentTicketLbl = document.getElementById('smallT')
 
 const searchParams = new URLSearchParams( window.location.search )
+
 if( !searchParams.has('escritorio') ){
     window.location = 'index.html'
     throw new Error('Escritorio es requerido')
@@ -18,6 +19,7 @@ let workingTicket = null;
 deskLbl.innerHTML = deskNumber
 
 function checkTicketCount( currentCount = 0 ){
+    console.log(currentCount)
     if(currentCount === 0){
         noMoreAlert.classList.remove('d-none');
     }else{
@@ -78,7 +80,7 @@ function connectToWebSockets() {
     };
     
     socket.onopen = ( event ) => {
-        console.log( 'Connected' );
+        console.log( 'Connected',event );
     };
     
 }

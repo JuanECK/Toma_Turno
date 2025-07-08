@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 import path from 'path';
+import cors from 'cors'
 
 interface Options {
   port: number;
@@ -7,6 +8,11 @@ interface Options {
   public_path?: string;
 }
 
+const corsOptions = {
+  origin: 'http://localhost:4200', // origen de la aplicacion
+  credentials: true,  // credenciales en la cabecera
+  optionsSuccessStatus: 200 // status de la respuesta
+}
 
 export class Server {
 
@@ -29,31 +35,35 @@ export class Server {
   private configure() {
 
     //* Middlewares
-    this.app.use( express.json() ); // raw
-    this.app.use( express.urlencoded({ extended: true }) ); // x-www-form-urlencoded
+    this.app.use(cors(corsOptions)); // para que se pueda acceder a la api desde el origen pactado con sus credenciales y opciones
+    this.app.use(express.json()); // raw
+    this.app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
 
     //* Public Folder
-    this.app.use( express.static( this.publicPath ) );
+    this.app.use(express.static(this.publicPath));
 
     //* Routes
     // this.app.use( this.routes );
 
     //* SPA /^\/(?!api).*/  <== Únicamente si no empieza con la palabra api
     this.app.get(/^\/(?!api).*/, (req, res) => {
-      const indexPath = path.join( __dirname + `../../../${ this.publicPath }/index.html` );
+      const indexPath = path.join(__dirname + `../../../${this.publicPath}/index.html`);
       res.sendFile(indexPath);
     });
 
   }
-  
-  public setRoutes( router:Router ){
-    this.app.use( router ); 
+
+  public setRoutes(router: Router) {
+    this.app.use(router);
   }
-  
+
   async start() {
-    
+
+    // para que se pueda acceder a la api desde el origen pactado con sus credenciales y opciones
+
+    this.app.disable('x-powered-by')
     this.serverListener = this.app.listen(this.port, () => {
-      console.log(`Server running on port ${ this.port }`);
+      console.log(`Server running on port ${this.port}`);
     });
 
   }

@@ -1,6 +1,8 @@
 import express, { Router } from 'express';
 import path from 'path';
-import cors from 'cors'
+
+import cors from 'cors';
+
 
 interface Options {
   port: number;
@@ -34,6 +36,13 @@ export class Server {
 
   private configure() {
 
+  //---- Configuracion del uso de cors
+    const corsOptions = {
+      origin: 'http://localhost:4200', // origen de la aplicacion
+      credentials:true,  // credenciales en la cabecera
+      optionsSuccessStatus: 200 // status de la respuesta
+    }
+
     //* Middlewares
     this.app.use(cors(corsOptions)); // para que se pueda acceder a la api desde el origen pactado con sus credenciales y opciones
     this.app.use(express.json()); // raw
@@ -41,6 +50,9 @@ export class Server {
 
     //* Public Folder
     this.app.use(express.static(this.publicPath));
+
+    //CORS
+    this.app.use(cors(corsOptions));
 
     //* Routes
     // this.app.use( this.routes );

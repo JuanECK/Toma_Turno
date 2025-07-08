@@ -9,9 +9,28 @@ interface Options {
   // routes: Router;
   public_path?: string;
 }
+const  allowedOrigins = ['http://localhost:4200','http://localhost:4300'] // origen de la aplicacion
 
+  //---- Configuracion del uso de cors
+// const corsOptions = {
+//   origin: function ( origin:any, callback:any ) {
+//     if (!origin) {
+//          // Permite solicitudes sin un origen (como las solicitudes desde la misma máquina)
+//          return callback(null, true);
+//        }
+//        if (allowedOrigins.indexOf(origin) === -1) {
+//          const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+//          return callback(new Error(msg), false);
+//        }
+//        return callback(null, true);
+//   },
+//   credentials: true,  // credenciales en la cabecera
+//   optionsSuccessStatus: 200 // status de la respuesta
+// }
+
+  //---- Configuracion del uso de cors
 const corsOptions = {
-  origin: 'http://localhost:4200', // origen de la aplicacion
+  origin: ['http://localhost:4200','http://localhost:4300'], // origen de la aplicacion
   credentials: true,  // credenciales en la cabecera
   optionsSuccessStatus: 200 // status de la respuesta
 }
@@ -36,13 +55,6 @@ export class Server {
 
   private configure() {
 
-  //---- Configuracion del uso de cors
-    const corsOptions = {
-      origin: 'http://localhost:4200', // origen de la aplicacion
-      credentials:true,  // credenciales en la cabecera
-      optionsSuccessStatus: 200 // status de la respuesta
-    }
-
     //* Middlewares
     this.app.use(cors(corsOptions)); // para que se pueda acceder a la api desde el origen pactado con sus credenciales y opciones
     this.app.use(express.json()); // raw
@@ -52,7 +64,7 @@ export class Server {
     this.app.use(express.static(this.publicPath));
 
     //CORS
-    this.app.use(cors(corsOptions));
+    // this.app.use(cors(corsOptions));
 
     //* Routes
     // this.app.use( this.routes );

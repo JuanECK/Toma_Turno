@@ -104,11 +104,10 @@ export class AutenticacionControlador {
     
     prueba = async ( req:Request, res:Response ) =>{
        
-        const usuarios = await db.query('SELECT * FROM sai_1.acciones') ;
+        const usuarios = await db.query('SELECT * FROM cat_apt') ;
         console.log(usuarios)
         const data = usuarios[0]
         res.json(data)
-
 
     }
 

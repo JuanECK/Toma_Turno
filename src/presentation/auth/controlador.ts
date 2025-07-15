@@ -53,32 +53,34 @@ export class AutenticacionControlador {
 
     // }
 
-    // iniciarSession = async ( req:Request, res:Response ) =>{
+    iniciarSession = async ( req:Request, res:Response ) =>{
 
-    //     const[ error, loginUserDto ] = LoginUsusarioDto.crear( req.body );
-    //     if( error ) return res.status( 404 ).json( { error } )
+        // const[ error, loginUserDto ] = LoginUsusarioDto.crear( req.body );
+        // if( error ) return res.status( 404 ).json( { error } )
             
-    //     this.autentucacionServicio.iniciarSession(loginUserDto!)
-    //     .then( ( usuario ) => 
-    //         {
-    //             console.log(usuario)
-    //             const {token, ...user} = usuario
+        this.autentucacionServicio.iniciarSession(req.body)
+        .then( ( usuario ) => 
+            {
+                // console.log(usuario)
+                // const {token, ...user} = usuario
 
-    //             res.cookie("auth_access_token", token, {
-    //             httpOnly: true,
-    //             //   expires: new Date(Date.now() + 900000),
-    //             sameSite: "strict",
-    //             secure: true,
-    //             //   priority:"high"
-    //             }),
+                // res.cookie("auth_access_token", token, {
+                // httpOnly: true,
+                // //   expires: new Date(Date.now() + 900000),
+                // sameSite: "strict",
+                // secure: true,
+                // //   priority:"high"
+                // }),
 
-    //         res.status(200).json( user )
-    //     } 
+            // res.status(200).json( user )
+            res.status(200).json( usuario )
+        } 
     
-    //     )
-    //     .catch( error => this.manejadorErrores( error, res ))
+        )
+        .catch( error => console.log( error))
+        // .catch( error => this.manejadorErrores( error, es )res ))
 
-    // }
+    }
 
     // terminarSession = async ( req:Request, res:Response ) =>{
     //     // console.log(req)

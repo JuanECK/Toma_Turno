@@ -5,6 +5,9 @@
 // import {db}  from "../../data/mysql/db/coneccion";
 // import   UsuarioModelo   from "../../data/mysql/model/usuario.model";
 
+import { bcryptAdapter } from "../../config/bcrypt.adapter";
+import { db } from "../../data/db/coneccion";
+
 //------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
 //---------------CONECCION FINAL CON LA BASE DE DATOS Y REALIZAR LA PETICION----------------------
@@ -82,79 +85,94 @@ export class AutenticacionServicio {
 
     // }
 
-    // public async iniciarSession ( loginUsusarioDto:LoginUsusarioDto ) {
+    public async iniciarSession ( credenciales:any ) {
 
-    //     console.log(loginUsusarioDto)
+        console.log(credenciales)
 
-    //     const{ Usuario, } = loginUsusarioDto
+        const{ email, password } = credenciales
+        let resultado: any
+        let usuario:any[] = []
         
-    //     //consulta usando mysql2
-    //     // const usuario = await UsuarioModelo.findOne( { where: { Usuario } } )
-    
-    //     // consulta usando procedimientos establecidos en MySQL
+        // consulta usando procedimientos establecidos en MySQL
+        const sql = `CALL sp_valida_usuario(:Usuario)`;
+        usuario = await db.query( sql, {replacements:{Usuario:email}} );
 
-    //     const sql = 'exec sp_valida_usuario :Usuario';
-    //     // const sql = 'CALL sp_valida_usuario(:Usuario)';
-    //     const usuario = await db.query( sql, { replacements: { Usuario:Usuario } } );
-    //     if( usuario[0].length === 0 ) throw GeneraError.badRespuesta( 'El E-mail no existe' );
+        console.log()
 
-    //     const resultado = JSON.parse(JSON.stringify(usuario[0][0]))
+        if( usuario.length === 0 ) {
+            return ('El Usuario no existe')
+        }
+        // if( usuario.length > 0 ){
+            //  resultado = JSON.parse(JSON.stringify(usuario[0][0]))
 
-    //     // console.log(resultado)
-    //     // const data = resultado[0]
-    //     // if( !data ) throw GeneraError.badRespuesta( 'El E-mail no existe' );
 
-    //     // const bitacora = JSON.parse(JSON.stringify(usuario[0][0]))
-    //     // console.log(bitacora.Id_User)
+        // const Contrasenia = bcryptAdapter.hash( password );
+
+        // if( !usuario ) throw console.log( 'El E-mail no existe' );
+
+
+        // console.log(Contrasenia)
+        // const data = resultado[0]
+        // if( !data ) throw GeneraError.badRespuesta( 'El E-mail no existe' );
+
+        // const bitacora = JSON.parse(JSON.stringify(usuario[0][0]))
+        // console.log(bitacora.Id_User)
 
         
-    //     // const result = JSON.parse(JSON.stringify(inserBitacora))
-    //     // console.log({inserto:inserBitacora})
+        // const result = JSON.parse(JSON.stringify(inserBitacora))
+        // console.log({inserto:inserBitacora})
         
         
-    //     const isMaching = bcryptAdapter.compare( loginUsusarioDto.Contrasenia, resultado.Contrasenia );
-    //     if( !isMaching ) throw GeneraError.badRespuesta( 'El password es incorrecto' );
+        const isMaching = bcryptAdapter.compare( password, usuario[0].password_hash );
+        if( !isMaching ) {return ( 'El password es incorrecto' )};
+
         
-    //     const { Contrasenia, ...usuarioEntidad } = UsuarioEntidad.formularioObjeto( resultado );
+        const { password_hash, ...usuarioEntidad } = usuario[0];
         
-    //     const token = await JwtAdapter.generateToken({ Id:resultado.Id_User, usuario: resultado.Nombre_Completo, sesion: resultado.Clave_Usuario });
-    //     if ( !token ) throw GeneraError.servidorInterno( 'Error al crear JWT' );
+        // const token = await JwtAdapter.generateToken({ Id:resultado.Id_User, usuario: resultado.Nombre_Completo, sesion: resultado.Clave_Usuario });
+        // if ( !token ) throw GeneraError.servidorInterno( 'Error al crear JWT' );
 
-    //     const llave = JSON.stringify({id_Perfil:resultado.Id_Perfil, Id:resultado.Id_User}) 
-    //     const UserId = cryptoAdapter.secreto(llave)
-    //     usuarioEntidad.Datos = UserId
+        // const llave = JSON.stringify({id_Perfil:resultado.Id_Perfil, Id:resultado.Id_User}) 
+        // const UserId = cryptoAdapter.secreto(llave)
+        // usuarioEntidad.Datos = UserId
 
-    //     const sqlLogBitacora = `exec sp_inserta_inicio_sesion :Id_User,"inicio sesion"` //
-    //     //metodo de MySql
-    //     // const sqlLogBitacora = `CALL sp_inserta_inicio_sesion(${bitacora[0].Id_User},"inicio sesion")`
-    //     const inserBitacora = await db.query( sqlLogBitacora, {replacements:{ Id_User:resultado.Id_User }} );
-    //     if(inserBitacora.length !== 2 )  throw GeneraError.badRespuesta('error al iniciar session')
+        // const sqlLogBitacora = `exec sp_inserta_inicio_sesion :Id_User,"inicio sesion"` //
+        // //metodo de MySql
+        // // const sqlLogBitacora = `CALL sp_inserta_inicio_sesion(${bitacora[0].Id_User},"inicio sesion")`
+        // const inserBitacora = await db.query( sqlLogBitacora, {replacements:{ Id_User:resultado.Id_User }} );
+        // if(inserBitacora.length !== 2 )  throw GeneraError.badRespuesta('error al iniciar session')
 
-    //     console.log(inserBitacora.length)
-    //     const { Id_Perfil, Id_User, Clave_Usuario, ...usuarioData } = usuarioEntidad
+        // console.log(inserBitacora.length)
+        // const { Id_Perfil, Id_User, Clave_Usuario, ...usuarioData } = usuarioEntidad
 
-    //     return {
+        // return {
 
-    //     user: usuarioData,
-    //     // UserId:UserId,
-    //     token
+        // user: usuarioData,
+        // // UserId:UserId,
+        // token
 
-    //     }
+        return  usuarioEntidad
 
-    //     // return
+        }
 
-    //     //     res.cookie("x-auth-token", 'juaaaaan', {
-    //     //           httpOnly: true,
-    //     //         //   expires: new Date(Date.now() + 900000),
-    //     //           sameSite: "strict",
-    //     //           secure: true,
-    //     //         //   priority:"high"
-    //     //         });
+        // return
 
-    //     //     return res
-    //     //     .status(200)
-    //     //     .json({user: 'Juan', loged: true})  
-    // }
+        //     res.cookie("x-auth-token", 'juaaaaan', {
+        //           httpOnly: true,
+        //         //   expires: new Date(Date.now() + 900000),
+        //           sameSite: "strict",
+        //           secure: true,
+        //         //   priority:"high"
+        //         });
+
+        //     return res
+        //     .status(200)
+        //     .json({user: 'Juan', loged: true})  
+
+
+        
+    }
+
 
     // public async terminarSession ( id_user:string ){
     // // public async terminarSession ( loginUserDto:LogOutUsusarioDto ){
@@ -207,16 +225,15 @@ export class AutenticacionServicio {
 
 
 
-        public async Prueba ( ){
-    // public async terminarSession ( loginUserDto:LogOutUsusarioDto ){
+    //     public async Prueba ( ){
+    // // public async terminarSession ( loginUserDto:LogOutUsusarioDto ){
 
-            // const inserBitacora = await db.query( sqlLogBitacora, { replacements:{ Id_User:id_user } })
-            // console.log(inserBitacora)
-            // if(inserBitacora.length !== 2 )  throw GeneraError.badRespuesta('error al terminar session')
+    //         // const inserBitacora = await db.query( sqlLogBitacora, { replacements:{ Id_User:id_user } })
+    //         // console.log(inserBitacora)
+    //         // if(inserBitacora.length !== 2 )  throw GeneraError.badRespuesta('error al terminar session')
                 
-            return {
-                sessionOut:true
-            }
+    //         return {
+    //             sessionOut:true
+    //         }
             
-    }
-}
+    // }

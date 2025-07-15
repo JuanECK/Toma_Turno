@@ -17,8 +17,8 @@ export class AutenticacionRutas {
         const autenticacionServicio = new AutenticacionServicio()
         const controlador = new AutenticacionControlador( autenticacionServicio );
 
-        router.get('/prueba', controlador.prueba);
-        // router.post('/login', controlador.iniciarSession);
+        // router.get('/login', controlador.prueba);
+        router.post('/login', controlador.iniciarSession);
 
         // router.post('/cookie', controlador.coockie);
 

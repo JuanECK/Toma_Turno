@@ -89,19 +89,36 @@ export class AutenticacionServicio {
 
         console.log(credenciales)
 
+        
         const{ email, password } = credenciales
         let resultado: any
-        let usuario:any[] = []
+        // let usuario:Usuario[] = []
         
         // consulta usando procedimientos establecidos en MySQL
-        const sql = `CALL sp_valida_usuario(:Usuario)`;
-        usuario = await db.query( sql, {replacements:{Usuario:email}} );
-
-        console.log()
-
-        if( usuario.length === 0 ) {
-            return ('El Usuario no existe')
+        type Usuario = {
+            userid: string;
+            password_hash: string;
+            rol: number;
+            estacion: number;
         }
+        const sql = `CALL sp_valida_usuario(:Usuario)`;
+
+        // const [usuario:Usuario] = await db.query(sql, {
+        // replacements: { Usuario: email },
+        // });
+
+        // console.log(usuario)
+
+        // usuario = await db.query( sql, {replacements:{Usuario:email}} );
+
+        // console.log()
+
+        // if( usuario.length === 0 ) {
+        //     return ('El Usuario no existe')
+        // }
+
+
+
         // if( usuario.length > 0 ){
             //  resultado = JSON.parse(JSON.stringify(usuario[0][0]))
 
@@ -123,11 +140,11 @@ export class AutenticacionServicio {
         // console.log({inserto:inserBitacora})
         
         
-        const isMaching = bcryptAdapter.compare( password, usuario[0].password_hash );
-        if( !isMaching ) {return ( 'El password es incorrecto' )};
+        // const isMaching = bcryptAdapter.compare( password, usuario[0].password_hash );
+        // if( !isMaching ) {return ( 'El password es incorrecto' )};
 
         
-        const { password_hash, ...usuarioEntidad } = usuario[0];
+        // const { password_hash, ...usuarioEntidad } = usuario[0];
         
         // const token = await JwtAdapter.generateToken({ Id:resultado.Id_User, usuario: resultado.Nombre_Completo, sesion: resultado.Clave_Usuario });
         // if ( !token ) throw GeneraError.servidorInterno( 'Error al crear JWT' );
@@ -151,7 +168,8 @@ export class AutenticacionServicio {
         // // UserId:UserId,
         // token
 
-        return  usuarioEntidad
+        // return  usuario
+        // return  usuarioEntidad
 
         }
 

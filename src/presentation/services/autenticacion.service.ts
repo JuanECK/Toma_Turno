@@ -109,9 +109,12 @@ export class AutenticacionServicio {
 
         // console.log(usuario)
 
-        // usuario = await db.query( sql, {replacements:{Usuario:email}} );
+        const usuario = await db.query( sql, {replacements:{Usuario:email}} );
 
-        // console.log()
+        console.log(usuario)
+
+
+        return {usuario:usuario}
 
         // if( usuario.length === 0 ) {
         //     return ('El Usuario no existe')

@@ -90,7 +90,7 @@ export class AutenticacionServicio {
         console.log(credenciales)
 
         
-        const{ email, password } = credenciales
+        const{ usuario, password } = credenciales
         let resultado: any
         // let usuario:Usuario[] = []
         
@@ -106,15 +106,18 @@ export class AutenticacionServicio {
         // const [usuario:Usuario] = await db.query(sql, {
         // replacements: { Usuario: email },
         // });
-
+// 
         // console.log(usuario)
 
-        const usuario = await db.query( sql, {replacements:{Usuario:email}} );
+        const usuarioLogin = await db.query( sql, {replacements:{Usuario:usuario}} );
 
-        console.log(usuario)
+        console.log(usuarioLogin)
+
+        // if(  )
+        
 
 
-        return {usuario:usuario}
+        return {usuario:usuarioLogin}
 
         // if( usuario.length === 0 ) {
         //     return ('El Usuario no existe')

@@ -14,6 +14,14 @@ import { db } from "../../data/db/coneccion";
 //------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
 
+type Usuario = {
+            userid: string;
+            password_hash: string;
+            rol: number;
+            estacion: number;
+            status:number;
+        }
+
 export class AutenticacionServicio {
 
 
@@ -85,39 +93,59 @@ export class AutenticacionServicio {
 
     // }
 
+
+    // public async iniciarSession ( credenciales:any ): Promise<Usuario | null> {
     public async iniciarSession ( credenciales:any ) {
 
-        console.log(credenciales)
+        try {
+            
+            const{ usuario, Contrasenia } = credenciales
+            const sql = `CALL sp_valida_usuario(:Usuario)`;
+            const result = { data:null , status:400 }
 
-        
-        const{ usuario, password } = credenciales
-        let resultado: any
-        // let usuario:Usuario[] = []
-        
-        // consulta usando procedimientos establecidos en MySQL
-        type Usuario = {
-            userid: string;
-            password_hash: string;
-            rol: number;
-            estacion: number;
+             // ----------------Metodo ANY----------------
+
+            const data = await db.query( sql, {
+            replacements:{Usuario:usuario}
+            });
+            const respuesta = JSON.parse(JSON.stringify(data))
+            
+            console.log(respuesta)
+            if( respuesta[0].Resultado == 'Sin datos' ){
+                console.log(data)
+                result.status = 400
+                return result 
+            }
+
+            const isMaching = bcryptAdapter.compare( Contrasenia, respuesta[0].password_hash );
+            if( !isMaching ) {return result};
+
+            const { password_hash, ...dataReturn} = respuesta[0]
+            result.data = dataReturn
+            result.status = 200
+            return result
+
+
+
+            // ----------------Metodo Tipado----------------
+            // const [results]:any = await db.query( sql, {
+            //     replacements:{Usuario:usuario}
+            // });
+            // // const row = results[0];
+            // const usuarioLogin: Usuario = {
+            //     userid: results.userid,
+            //     password_hash: results.password_hash,
+            //     rol: results.rol,
+            //     estacion: results.estacion,
+            //     status:200,
+            // };
+            // console.log(usuarioLogin)
+            // return usuarioLogin;
+            // ----------------------------------------------
+
+        } catch (error) {
+            throw console.log(`${error}`)
         }
-        const sql = `CALL sp_valida_usuario(:Usuario)`;
-
-        // const [usuario:Usuario] = await db.query(sql, {
-        // replacements: { Usuario: email },
-        // });
-// 
-        // console.log(usuario)
-
-        const usuarioLogin = await db.query( sql, {replacements:{Usuario:usuario}} );
-
-        console.log(usuarioLogin)
-
-        // if(  )
-        
-
-
-        return {usuario:usuarioLogin}
 
         // if( usuario.length === 0 ) {
         //     return ('El Usuario no existe')
